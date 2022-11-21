@@ -7,6 +7,7 @@ import { HomeComponent } from './components/home/home.component';
 import { routing } from './app.routes';
 import { ProgramasComponent } from './components/programas/programas.component';
 import { TalleresComponent } from './components/talleres/talleres.component';
+import { PersonasComponent } from './components/personas/personas.component';
 
 @NgModule({
   declarations: [

@@ -7,7 +7,7 @@ export class Taller {
     fecha: any;
     lugar: string;
     direccion: string;
-    programa!: Programa;
+    programa: Programa;
 
     constructor(){
         this.id = 0,
@@ -15,5 +15,6 @@ export class Taller {
         this.fecha = new Date();
         this.lugar = "";
         this.direccion = "";
+        this.programa = new Programa();
     }
 }

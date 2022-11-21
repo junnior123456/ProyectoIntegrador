@@ -14,6 +14,7 @@
                 <label class="form-label">Fecha</label>
                 <div class="input-group">
                     <input
+                        id="fecha"
                         class="form-control"
                         placeholder="yyyy-mm-dd"
                         name="dp"
@@ -36,15 +37,15 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">Programa</label>
-                <select [(ngModel)]="newTaller.programa" name="programa" class="form-select" aria-label="Default select example">
-                    <option selected>--Seleccione programa--</option>
+                <select [(ngModel)]="newTaller.programa.id" name="programa" class="form-select" aria-label="Default select example">
+                    <option selected [value]="0">--Seleccione programa--</option>
                     <option *ngFor="let programa of lstProgramas" [ngValue]="programa.id">{{programa.nombre}}</option>
                 </select>
             </div>
         </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click');save()">{{lblButtonTaller}}</button>
+        <button type="button" class="btn btn-outline-dark" (click)="save()">{{lblButtonTaller}}</button>
     </div>
 </ng-template>
 
@@ -78,7 +79,7 @@
             <td>{{programa.lugar}}</td>
             <td>{{programa.direccion}}</td>
             <td>{{programa.programa.nombre}}</td>
-            <td><button class="btn btn-success" (click)="editar(programa.id);open(formTaller,'edit')"><i class="bi bi-pencil-square"></i></button></td>
+            <td><button class="btn btn-success" (click)="open(formTaller,'edit');editar(programa.id)"><i class="bi bi-pencil-square"></i></button></td>
             <td><button class="btn btn-danger" (click)="eliminar(programa.id)"><i class="bi bi-trash"></i></button></td>
         </tr>
     </tbody>

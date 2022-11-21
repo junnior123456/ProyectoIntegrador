@@ -25,7 +25,7 @@ export var talleresJSON = [
     {
         id: 1,
         tema: "Tema taller 1",
-        fecha: "12/11/2022",
+        fecha: "2022-11-12",
         lugar: "San Martin",
         direccion: "Jr. Jimenez Pimentel 322",
         programa: {
@@ -33,5 +33,24 @@ export var talleresJSON = [
             nombre: "Programa de Ejemplo",
             descripcion: "Descripcion de programa..."
         }
+    }
+]
+
+export var personasJSON = [
+    {
+        id: 1,
+        nombres: "Junnior",
+        paterno: "Chinchay",
+        materno: "Macca",
+        dni: "12332112",
+        telefono: "987502406"
+    },
+    {
+        id: 2,
+        nombres: "Joel",
+        paterno: "Delgado",
+        materno: "Cachique",
+        dni: "32132112",
+        telefono: "953664265"
     }
 ]

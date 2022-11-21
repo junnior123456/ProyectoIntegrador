@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgbModal, NgbModalOptions, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Programa } from './programa';
 import {programasJSON} from '../globals';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-programas',
@@ -42,19 +43,50 @@ export class ProgramasComponent implements OnInit {
 	}
 
   save(){
-    if(this.newPrograma.id == 0){
-      //new
-      if(this.lstProgramas.length > 0){
-        this.newPrograma.id = this.lstProgramas[this.lstProgramas.length-1].id+1;
+    if(this.validarCampos()){
+      if(this.newPrograma.id == 0){
+        //new
+        if(this.lstProgramas.length > 0){
+          this.newPrograma.id = this.lstProgramas[this.lstProgramas.length-1].id+1;
+        }else{
+          this.newPrograma.id = 1;
+        }
+        this.lstProgramas.push(this.newPrograma);
       }else{
-        this.newPrograma.id = 1;
+        //edit
+        this.lstProgramas[this.lstProgramas.findIndex((obj => obj.id == this.newPrograma.id))] = this.newPrograma;
       }
-      this.lstProgramas.push(this.newPrograma);
-    }else{
-      //edit
-      this.lstProgramas[this.lstProgramas.findIndex((obj => obj.id == this.newPrograma.id))] = this.newPrograma;
+      this.newPrograma = new Programa();
+      this.modalService.dismissAll();
     }
-    this.newPrograma = new Programa();
+  }
+
+  validarCampos(): boolean{
+    var check = false;
+    if(this.newPrograma.nombre == "" || this.newPrograma.nombre == null){
+      Swal.fire({
+        title: '¡Error!',
+        text: 'Ingrese un nombre para el programa.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      })
+    }else if(this.newPrograma.descripcion == "" || this.newPrograma.descripcion == null){
+      Swal.fire({
+        title: '¡Error!',
+        text: 'Ingrese una descripción para el programa.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      })
+    }else{
+      Swal.fire({
+        title: '¡Listo!',
+        text: 'Programa creado correctamente.',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      })
+      check = true;
+    }
+    return check;
   }
 
   editar(id: number){
