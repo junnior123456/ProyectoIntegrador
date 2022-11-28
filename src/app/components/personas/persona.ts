@@ -5,6 +5,7 @@ export class Persona {
     materno: string;
     dni: string;
     telefono: string;
+    correo: String;
 
     constructor(){
         this.id = 0,
@@ -12,6 +13,7 @@ export class Persona {
         this.paterno = ""
         this.materno = "",
         this.dni = "",
-        this.telefono = ""
+        this.telefono = "",
+        this.correo = ""
     }
 }

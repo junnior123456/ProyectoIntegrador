@@ -1,3 +1,5 @@
+import { ProgramaService } from './../../services/programa.service';
+import { TallerService } from './../../services/taller.service';
 import { ProgramasComponent } from './../programas/programas.component';
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbCalendar, NgbDateStruct, NgbInputDatepickerConfig, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
@@ -27,15 +29,33 @@ export class TalleresComponent implements OnInit {
   
   lstProgramas: any[];
 
-  constructor(private modalService: NgbModal, private calendar: NgbCalendar, private programasComponent: ProgramasComponent) {
+  constructor(private modalService: NgbModal, private calendar: NgbCalendar, private programasComponent: ProgramasComponent, private tallerService: TallerService, private programaService: ProgramaService) {
     this.lstProgramas = programasComponent.lstProgramas;
   }
 
   ngOnInit(): void {
-    this.lstTallers = talleresJSON;
-    this.lstProgramas = programasJSON;
+    //this.lstTallers = talleresJSON;
+    this.getProgramas();
+    this.getTalleres();
+    //this.lstProgramas = programasJSON;
     this.today = { year: this.today.getFullYear(), month: this.today.getMonth(), day: this.today.getDay() };
     this.modelFecha = this.calendar.getToday();
+  }
+
+  getTalleres(){
+    this.tallerService.getAll().subscribe( (response: any) => {
+      if(response.success){
+        this.lstTallers = response.data;
+      }
+    });
+  }
+
+  getProgramas(){
+    this.programaService.getAll().subscribe( (response: any) => {
+      if(response.success){
+        this.lstProgramas = response.data;
+      }
+    });
   }
 
   open(content: any, type: string) {
@@ -95,12 +115,6 @@ export class TalleresComponent implements OnInit {
         confirmButtonText: 'Aceptar'
       })
     }else{
-      Swal.fire({
-        title: '¡Listo!',
-        text: 'Taller creado correctamente.',
-        icon: 'success',
-        confirmButtonText: 'Aceptar'
-      })
       check = true;
     }
     return check;
@@ -108,23 +122,66 @@ export class TalleresComponent implements OnInit {
 
   save(){
     if(this.validarCampos()){
+
+      var json;
+
       if(this.newTaller.id == 0){
         //new
-        if(this.lstTallers.length > 0){
-          this.newTaller.id = this.lstTallers[this.lstTallers.length-1].id+1;
-        }else{
-          this.newTaller.id = 1;
-        }
+        // if(this.lstTallers.length > 0){
+        //   this.newTaller.id = this.lstTallers[this.lstTallers.length-1].id+1;
+        // }else{
+        //   this.newTaller.id = 1;
+        // }
         this.newTaller.fecha = this.datepipe.transform(new Date(this.modelFecha.year, this.modelFecha.month-1, this.modelFecha.day), 'YYYY-MM-dd');
         this.newTaller.programa = this.lstProgramas[this.lstProgramas.findIndex((obj => obj.id == this.newTaller.programa.id))];
-        this.lstTallers.push(this.newTaller);
-        console.log(this.newTaller);
+        // this.lstTallers.push(this.newTaller);
+        // console.log(this.newTaller);
+
+        json = {
+          tema: this.newTaller.tema,
+          fecha: this.newTaller.fecha,
+          lugar: this.newTaller.lugar,
+          direccion: this.newTaller.direccion,
+          programa: {
+            id: this.newTaller.programa.id
+          }
+        }
       }else{
         //edit
         this.newTaller.fecha = this.datepipe.transform(new Date(this.modelFecha.year, this.modelFecha.month-1, this.modelFecha.day), 'YYYY-MM-dd');
         this.newTaller.programa = this.lstProgramas[this.lstProgramas.findIndex((obj => obj.id == this.newTaller.programa.id))];
-        this.lstTallers[this.lstTallers.findIndex((obj => obj.id == this.newTaller.id))] = this.newTaller;
+        // this.lstTallers[this.lstTallers.findIndex((obj => obj.id == this.newTaller.id))] = this.newTaller;
+        json = {
+          id: this.newTaller.id,
+          tema: this.newTaller.tema,
+          fecha: this.newTaller.fecha,
+          lugar: this.newTaller.lugar,
+          direccion: this.newTaller.direccion,
+          programa: {
+            id: this.newTaller.programa.id
+          }
+        }
       }
+
+      this.tallerService.save(json).subscribe( (response: any) => {
+        if(response.id != null){
+          Swal.fire({
+            title: '¡Listo!',
+            text: 'Taller guardado correctamente.',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          });
+          this.getProgramas();
+          this.getTalleres();
+        }else{
+          Swal.fire({
+            title: '¡Error!',
+            text: 'Error al guardar taller.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+          })
+        }
+      })
       this.newTaller = new Taller();
       this.modalService.dismissAll();
     }
@@ -149,8 +206,26 @@ export class TalleresComponent implements OnInit {
 
   eliminar(id: number){
     this.newTaller = new Taller();
-    var indx = this.lstTallers.findIndex((obj => obj.id == id));
-    this.lstTallers.splice(indx, 1);
+    // var indx = this.lstTallers.findIndex((obj => obj.id == id));
+    // this.lstTallers.splice(indx, 1);
+    this.tallerService.delete(id).subscribe( (response: any) => {
+      if(response.success){
+        Swal.fire({
+          title: '¡Listo!',
+          text: 'Taller eliminado correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
+        this.getProgramas();
+      }else{
+        Swal.fire({
+          title: '¡Error!',
+          text: 'Error al eliminar taller.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        })
+      };
+    });
   }
 
   clear(){

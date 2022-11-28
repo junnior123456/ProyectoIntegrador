@@ -1,3 +1,4 @@
+import { ProgramaService } from './../../services/programa.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal, NgbModalOptions, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Programa } from './programa';
@@ -17,10 +18,11 @@ export class ProgramasComponent implements OnInit {
   lblPrograma = "Nuevo Programa";
   lblButtonPrograma = "Guardar";
 
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal, private programaService: ProgramaService) { }
 
   ngOnInit(): void {
-    this.lstProgramas = programasJSON;
+    this.getProgramas();
+    //this.lstProgramas = programasJSON;
   }
 
   open(content: any, type: string) {
@@ -44,21 +46,64 @@ export class ProgramasComponent implements OnInit {
 
   save(){
     if(this.validarCampos()){
+
+      var json;
+      
       if(this.newPrograma.id == 0){
         //new
-        if(this.lstProgramas.length > 0){
-          this.newPrograma.id = this.lstProgramas[this.lstProgramas.length-1].id+1;
-        }else{
-          this.newPrograma.id = 1;
+        // if(this.lstProgramas.length > 0){
+        //   this.newPrograma.id = this.lstProgramas[this.lstProgramas.length-1].id+1;
+        // }else{
+        //   this.newPrograma.id = 1;
+        // }
+        // this.lstProgramas.push(this.newPrograma);
+
+        json = {
+          nombre: this.newPrograma.nombre,
+          descripcion: this.newPrograma.descripcion
         }
-        this.lstProgramas.push(this.newPrograma);
+
       }else{
         //edit
-        this.lstProgramas[this.lstProgramas.findIndex((obj => obj.id == this.newPrograma.id))] = this.newPrograma;
+        // this.lstProgramas[this.lstProgramas.findIndex((obj => obj.id == this.newPrograma.id))] = this.newPrograma;
+      
+        json = {
+          id: this.newPrograma.id,
+          nombre: this.newPrograma.nombre,
+          descripcion: this.newPrograma.descripcion
+        }
+      
       }
+
+      this.programaService.save(json).subscribe( (response: any) => {
+        if(response.id != null){
+          Swal.fire({
+            title: '¡Listo!',
+            text: 'Programa guardado correctamente.',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          });
+          this.getProgramas();
+        }else{
+          Swal.fire({
+            title: '¡Error!',
+            text: 'Error al guardar programa.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+          })
+        }
+      })
       this.newPrograma = new Programa();
       this.modalService.dismissAll();
     }
+  }
+
+  getProgramas(){
+    this.programaService.getAll().subscribe( (response: any) => {
+      if(response.success){
+        this.lstProgramas = response.data;
+      }
+    });
   }
 
   validarCampos(): boolean{
@@ -78,12 +123,6 @@ export class ProgramasComponent implements OnInit {
         confirmButtonText: 'Aceptar'
       })
     }else{
-      Swal.fire({
-        title: '¡Listo!',
-        text: 'Programa creado correctamente.',
-        icon: 'success',
-        confirmButtonText: 'Aceptar'
-      })
       check = true;
     }
     return check;
@@ -99,8 +138,26 @@ export class ProgramasComponent implements OnInit {
 
   eliminar(id: number){
     this.newPrograma = new Programa();
-    var indx = this.lstProgramas.findIndex((obj => obj.id == id));
-    this.lstProgramas.splice(indx, 1);
+    // var indx = this.lstProgramas.findIndex((obj => obj.id == id));
+    // this.lstProgramas.splice(indx, 1);
+    this.programaService.delete(id).subscribe( (response: any) => {
+      if(response.success){
+        Swal.fire({
+          title: '¡Listo!',
+          text: 'Programa eliminado correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
+        this.getProgramas();
+      }else{
+        Swal.fire({
+          title: '¡Error!',
+          text: 'Error al eliminar programa.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        })
+      };
+    });
   }
 
   clear(){

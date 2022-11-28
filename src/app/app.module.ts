@@ -8,6 +8,7 @@ import { routing } from './app.routes';
 import { ProgramasComponent } from './components/programas/programas.component';
 import { TalleresComponent } from './components/talleres/talleres.component';
 import { PersonasComponent } from './components/personas/personas.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { PersonasComponent } from './components/personas/personas.component';
   imports: [
     routing,
     BrowserModule,
+    HttpClientModule,
     NgbModule
   ],
   providers: [],
