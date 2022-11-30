@@ -1,7 +1,8 @@
 <ng-template #formTaller let-modal>
     <div class="modal-header">
         <h4 class="modal-title" id="modal-basic-title">{{lblTaller}}</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');clear()"></button>
+        <button type="button" class="btn-close" aria-label="Close"
+            (click)="modal.dismiss('Cross click');clear()"></button>
     </div>
     <div class="modal-body">
         <form>
@@ -13,16 +14,10 @@
             <div class="mb-3">
                 <label class="form-label">Fecha</label>
                 <div class="input-group">
-                    <input
-                        id="fecha"
-                        class="form-control"
-                        placeholder="yyyy-mm-dd"
-                        name="dp"
-                        [(ngModel)]="modelFecha"
-                        ngbDatepicker
-                        #d="ngbDatepicker"
-                    />
-                    <button class="btn btn-outline-secondary bi bi-calendar3" (click)="d.toggle()" type="button"></button>
+                    <input id="fecha" class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="modelFecha"
+                        ngbDatepicker #d="ngbDatepicker" />
+                    <button class="btn btn-outline-secondary bi bi-calendar3" (click)="d.toggle()"
+                        type="button"></button>
                 </div>
             </div>
             <div class="mb-3">
@@ -37,7 +32,8 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">Programa</label>
-                <select [(ngModel)]="newTaller.programa.id" name="programa" class="form-select" aria-label="Default select example">
+                <select [(ngModel)]="newTaller.programa.id" name="programa" class="form-select"
+                    aria-label="Default select example">
                     <option selected [value]="0">--Seleccione programa--</option>
                     <option *ngFor="let programa of lstProgramas" [ngValue]="programa.id">{{programa.nombre}}</option>
                 </select>
@@ -47,6 +43,83 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="save()">{{lblButtonTaller}}</button>
     </div>
+</ng-template>
+
+<ng-template #formAsistencia let-modalAsistencia>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Tomar Asistencia</h4>
+        <button type="button" class="btn-close" aria-label="Close"
+            (click)="modalAsistencia.dismiss('Cross click');clear()"></button>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div class="mb-3">
+                <label class="form-label">Sesión</label>
+                <select (change)="changeSesion()" [(ngModel)]="newAsistencia.sesion.id" name="sesion"
+                    class="form-select" aria-label="Default select example">
+                    <option selected [value]="0">--Seleccione Sesión--</option>
+                    <option *ngFor="let sesion of lstSesiones" [ngValue]="sesion.id">{{sesion.nombre}}</option>
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <table class="table table-light" *ngIf="newAsistencia.sesion.id != 0">
+        <thead>
+            <tr style="text-align: center;">
+                <th scope="col">Persona</th>
+                <th scope="col">Asistencia</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let asistencia of lstAsistencias" style="text-align: center;">
+                <td>{{asistencia.persona.nombres}} {{asistencia.persona.paterno}} {{asistencia.persona.materno}}</td>
+                <td *ngIf="asistencia.estado == 0">
+                    <i
+                        placement="end"
+                        [ngbPopover]="popContent"
+                        triggers="manual"
+                        #p1="ngbPopover"
+                        (click)="toggleAsistencia(p1, asistencia.id)"
+                        style="color: red;" class="bi bi-x-circle-fill">
+                    </i>
+                </td>
+                <td *ngIf="asistencia.estado == 1">
+                    <i
+                        placement="end"
+                        [ngbPopover]="popContent"
+                        triggers="manual"
+                        #p2="ngbPopover"
+                        (click)="toggleAsistencia(p2, asistencia.id)"
+                        style="color: orange;" class="bi bi-clock-fill">
+                    </i>
+                </td>
+                <td *ngIf="asistencia.estado == 2">
+                    <i
+                        placement="end"
+                        [ngbPopover]="popContent"
+                        triggers="manual"
+                        #p3="ngbPopover"
+                        (click)="toggleAsistencia(p3, asistencia.id)"
+                        style="color: greenyellow;"
+                        class="bi bi-check-circle-fill">
+                    </i>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="saveAsistencia()">Guardar Asistencia</button>
+    </div>
+</ng-template>
+
+<ng-template #popContent let-id="id">
+    <span>
+        <i (click)="tempChangeAsistencia(id, 0)" style="color: red;" class="bi bi-x-circle-fill"></i>&nbsp;
+        <i (click)="tempChangeAsistencia(id, 1)" style="color: orange;" class="bi bi-clock-fill"></i>&nbsp;
+        <i (click)="tempChangeAsistencia(id, 2)" style="color: greenyellow;" class="bi bi-check-circle-fill"></i>
+    </span>
 </ng-template>
 
 <div class="row">
@@ -67,6 +140,7 @@
             <th scope="col">Lugar</th>
             <th scope="col">Dirección</th>
             <th scope="col">Programa</th>
+            <th scope="col">Acción</th>
             <th scope="col">Editar</th>
             <th scope="col">Eliminar</th>
         </tr>
@@ -79,7 +153,10 @@
             <td>{{programa.lugar}}</td>
             <td>{{programa.direccion}}</td>
             <td>{{programa.programa.nombre}}</td>
-            <td><button class="btn btn-success" (click)="open(formTaller,'edit');editar(programa.id)"><i class="bi bi-pencil-square"></i></button></td>
+            <td><button class="btn btn-primary" (click)="open(formAsistencia);asistencia(programa.id)">Tomar Asistencia
+                    <i class="bi bi-person-check-fill"></i></button></td>
+            <td><button class="btn btn-success" (click)="open(formTaller,'edit');editar(programa.id)"><i
+                        class="bi bi-pencil-square"></i></button></td>
             <td><button class="btn btn-danger" (click)="eliminar(programa.id)"><i class="bi bi-trash"></i></button></td>
         </tr>
     </tbody>

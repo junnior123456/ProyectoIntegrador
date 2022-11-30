@@ -1,9 +1,15 @@
+import { AsistenciaService } from './../../services/asistencia.service';
+import { SesionService } from './../../services/sesion.service';
+import { InscripcionService } from './../../services/inscripcion.service';
+import { TallerService } from './../../services/taller.service';
+import { Inscripcion } from './inscripcion';
 import { PersonaService } from './../../services/persona.service';
 import { personasJSON } from './../globals';
 import { Component, OnInit } from '@angular/core';
-import { NgbModalOptions, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalOptions, NgbModal, NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { Persona } from './persona';
 import Swal from 'sweetalert2';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-personas',
@@ -18,10 +24,28 @@ export class PersonasComponent implements OnInit {
   lblPersona = "Nueva Persona";
   lblButtonPersona = "Guardar";
 
-  constructor(private modalService: NgbModal, private personaService: PersonaService) { }
+  lstTalleres!: any[];
+  lstSesiones!: any[];
+  newInscripcion: Inscripcion = new Inscripcion();
+
+  modelFecha!: NgbDateStruct;
+  date!: { year: number; month: number };
+  datepipe: DatePipe = new DatePipe('en-US')
+  today: any = new Date();
+
+  constructor(private modalService: NgbModal,
+    private personaService: PersonaService,
+    private calendar: NgbCalendar,
+    private tallerService: TallerService,
+    private inscripcionService: InscripcionService,
+    private sesionService: SesionService,
+    private asistenciaService: AsistenciaService) { }
 
   ngOnInit(): void {
     this.getPersonas();
+    this.getTalleres();
+    this.today = { year: this.today.getFullYear(), month: this.today.getMonth(), day: this.today.getDay() };
+    this.modelFecha = this.calendar.getToday();
     //this.lstPersonas = personasJSON;
   }
 
@@ -33,7 +57,15 @@ export class PersonasComponent implements OnInit {
     });
   }
 
-  open(content: any, type: string) {
+  getTalleres(){
+    this.tallerService.getAll().subscribe( (response: any) => {
+      if(response.success){
+        this.lstTalleres = response.data;
+      }
+    });
+  }
+
+  open(content: any, type?: string) {
     switch (type) {
       case "new":
         this.lblPersona = "Nueva Persona";
@@ -173,6 +205,136 @@ export class PersonasComponent implements OnInit {
     this.newPersona.dni = this.lstPersonas[indx].dni;
     this.newPersona.telefono = this.lstPersonas[indx].telefono;
     this.newPersona.correo = this.lstPersonas[indx].correo;
+  }
+
+  inscripcion(id: number){
+    this.newPersona = new Persona();
+    this.newInscripcion = new Inscripcion();
+    var indx = this.lstPersonas.findIndex((obj => obj.id == id));
+    this.newInscripcion.persona.id = this.lstPersonas[indx].id;
+    this.newInscripcion.persona.nombres = this.lstPersonas[indx].nombres;
+    this.newInscripcion.persona.paterno = this.lstPersonas[indx].paterno;
+    this.newInscripcion.persona.materno = this.lstPersonas[indx].materno;
+    this.newInscripcion.persona.dni = this.lstPersonas[indx].dni;
+    this.newInscripcion.persona.telefono = this.lstPersonas[indx].telefono;
+    this.newInscripcion.persona.correo = this.lstPersonas[indx].correo;
+  }
+
+  validarCampos2(): boolean{
+    var check = false;
+    if(this.newInscripcion.persona.id == 0 || this.newInscripcion.persona.id == null){
+      Swal.fire({
+        title: '¡Error!',
+        text: 'Seleccione la persona a inscribir.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      })
+    }else if(this.newInscripcion.taller.id == 0 || this.newInscripcion.taller.id == null){
+      Swal.fire({
+        title: '¡Error!',
+        text: 'Seleccione el taller a inscribir.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      })
+    }else{
+      check = true;
+    }
+    return check;
+  }
+
+  getSesionesByTallerIdSave(idt: number, idp: number){
+    this.sesionService.getByTallerId(idt).subscribe( (response: any) => {
+      if(response.success){
+        this.lstSesiones = response.data;
+        if(this.lstSesiones.length > 0){
+          this.asistenciaService.saveSesionPersona(this.lstSesiones, idp).subscribe( (response: any) => {
+            if(response.length == 0){
+              console.log("Error al guardar Asistencias default");
+            }
+          });
+        }
+      }
+    });
+  }
+
+  saveInscripcion(){
+    this.inscripcionService.isInscrito(this.newInscripcion.persona.id, this.newInscripcion.taller.id).subscribe( (response: any) => {
+      if(response){
+        Swal.fire({
+          title: '¡Error!',
+          text: 'Esta persona ya está inscrita en este taller.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        })
+      }else{
+        if(this.validarCampos2()){
+
+          var json;
+    
+          if(this.newPersona.id == 0){
+            //new
+            // if(this.lstPersonas.length > 0){
+            //   this.newPersona.id = this.lstPersonas[this.lstPersonas.length-1].id+1;
+            // }else{
+            //   this.newPersona.id = 1;
+            // }
+            this.newInscripcion.fecha = this.datepipe.transform(new Date(this.modelFecha.year, this.modelFecha.month-1, this.modelFecha.day+1), 'YYYY-MM-dd');
+            json = {
+              fecha: this.newInscripcion.fecha,
+              persona: {
+                id: this.newInscripcion.persona.id
+              },
+              taller: {
+                id: this.newInscripcion.taller.id
+              }
+            }
+            
+          }else{
+            //edit
+            //this.lstPersonas[this.lstPersonas.findIndex((obj => obj.id == this.newPersona.id))] = this.newPersona;
+    
+            this.newInscripcion.fecha = this.datepipe.transform(new Date(this.modelFecha.year, this.modelFecha.month-1, this.modelFecha.day+1), 'YYYY-MM-dd');
+            json = {
+              id: this.newInscripcion.id,
+              fecha: this.newInscripcion.fecha,
+              persona: {
+                id: this.newInscripcion.persona.id
+              },
+              taller: {
+                id: this.newInscripcion.taller.id
+              }
+            }
+          }
+    
+          this.inscripcionService.save(json).subscribe( (response: any) => {
+            if(response.id != null){
+              Swal.fire({
+                title: '¡Listo!',
+                text: 'Inscripción registrada correctamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+              });
+              this.getPersonas();
+              this.getSesionesByTallerIdSave(this.newInscripcion.taller.id, this.newInscripcion.persona.id);
+              
+              this.newPersona = new Persona();
+              this.newInscripcion = new Inscripcion();
+              this.modalService.dismissAll();
+            }else{
+              Swal.fire({
+                title: '¡Error!',
+                text: 'Error al registrar inscripción.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+              })
+            }
+          });
+    
+          
+        }
+      }
+    });
+    
   }
 
   eliminar(id: number){
