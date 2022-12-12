@@ -1,6 +1,11 @@
 .center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 50%;
+    position: absolute;
+    right: 250px;
   }
+
+.contenedor{
+  position: absolute;
+  top: 200px;
+  left: 300px;
+  width: 200px;
+}

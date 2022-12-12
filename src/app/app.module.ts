@@ -9,6 +9,7 @@ import { ProgramasComponent } from './components/programas/programas.component';
 import { TalleresComponent } from './components/talleres/talleres.component';
 import { PersonasComponent } from './components/personas/personas.component';
 import { HttpClientModule } from '@angular/common/http';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [

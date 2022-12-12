@@ -27,6 +27,11 @@ export class AsistenciaService {
     return this._http.get(url);
   };
 
+  getEstadosByTaller(){
+    let url = this.url + "taller/estado";
+    return this._http.get(url);
+  }
+
   save(data: any){
     let url = this.url + "save";
     return this._http.post(url, data);

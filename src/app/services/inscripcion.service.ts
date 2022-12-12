@@ -17,6 +17,11 @@ export class InscripcionService {
     return this._http.get(url);
   };
 
+  getCantidad(){
+    let url = this.url + "/cantidad";
+    return this._http.get(url);
+  };
+
   getById(id: number){
     let url = this.url + id;
     return this._http.get(url);

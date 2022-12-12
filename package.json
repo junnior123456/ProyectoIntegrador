@@ -21,6 +21,7 @@
     "@ng-bootstrap/ng-bootstrap": "^13.1.0",
     "@popperjs/core": "^2.10.2",
     "bootstrap": "^5.2.0",
+    "ng-apexcharts": "^1.7.4",
     "rxjs": "~7.5.0",
     "sweetalert2": "^11.6.10",
     "tslib": "^2.3.0",
