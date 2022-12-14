@@ -70,6 +70,34 @@
     </div>
 </ng-template>
 
+<ng-template #formInscripcionDelete let-modalInscripcionDelete>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Borrar Inscripción</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modalInscripcionDelete.dismiss('Cross click');clear()"></button>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div class="mb-3">
+                <label class="form-label">Persona</label>
+                <select [(ngModel)]="newInscripcion.persona.id" name="persona" class="form-select" aria-label="Default select example">
+                    <option selected [value]="0">--Seleccione persona--</option>
+                    <option *ngFor="let persona of lstPersonas" [ngValue]="persona.id">{{persona.nombres}} {{persona.paterno}} {{persona.materno}}</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Taller</label>
+                <select [(ngModel)]="newInscripcion.taller.id" name="taller" class="form-select" aria-label="Default select example">
+                    <option selected [value]="0">--Seleccione taller--</option>
+                    <option *ngFor="let taller of lstTalleres" [ngValue]="taller.id">{{taller.tema}}</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="deleteInscripcion()">Borrar Inscripción</button>
+    </div>
+</ng-template>
+
 <div class="row">
     <div class="col-6">
         <h4>Personas</h4>
@@ -101,7 +129,10 @@
             <td>{{persona.materno}}</td>
             <td>{{persona.dni}}</td>
             <td>{{persona.telefono}}</td>
-            <td><button class="btn btn-primary" (click)="open(formInscripcion);inscripcion(persona.id)">Inscripción <i class="bi bi-person-fill-add"></i></button></td>
+            <td>
+                <button class="btn btn-primary" (click)="open(formInscripcion);inscripcion(persona.id)">Inscripción <i class="bi bi-person-fill-add"></i></button>&nbsp;&nbsp;
+                <button class="btn btn-danger" (click)="open(formInscripcionDelete);inscripcion(persona.id)">Borrar Inscripción <i class="bi bi-person-fill-add"></i></button>
+            </td>
             <td><button class="btn btn-success" (click)="open(formPersona, 'edit');editar(persona.id)"><i class="bi bi-pencil-square"></i></button></td>
             <td><button class="btn btn-danger" (click)="eliminar(persona.id)"><i class="bi bi-trash"></i></button></td>
         </tr>

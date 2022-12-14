@@ -54,3 +54,5 @@ export var personasJSON = [
         telefono: "953664265"
     }
 ]
+
+export var isLogged = false;

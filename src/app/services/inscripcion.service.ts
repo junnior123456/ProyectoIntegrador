@@ -41,4 +41,9 @@ export class InscripcionService {
     let url = this.url + id;
     return this._http.delete(url);
   };
+
+  deleteInscripcionByPersonaTaller(idP: number, idT: number){
+    let url = this.url + "delete/persona/"+idP+"/taller/"+idT;
+    return this._http.get(url);
+  };
 }

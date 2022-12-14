@@ -220,6 +220,45 @@ export class PersonasComponent implements OnInit {
     this.newInscripcion.persona.correo = this.lstPersonas[indx].correo;
   }
 
+  deleteInscripcion(){
+    this.inscripcionService.isInscrito(this.newInscripcion.persona.id, this.newInscripcion.taller.id).subscribe( (response: any) => {
+      if(response){
+        if(this.validarCampos2()){
+
+          var json;
+  
+          this.inscripcionService.deleteInscripcionByPersonaTaller(this.newInscripcion.persona.id, this.newInscripcion.taller.id).subscribe( (response: any) => {
+            
+            this.asistenciaService.deleteByPersonaTaller(this.newInscripcion.persona.id, this.newInscripcion.taller.id).subscribe( (response: any) => {
+              Swal.fire({
+                title: '¡Listo!',
+                text: 'Inscripción eliminada correctamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+              });
+              this.getPersonas();
+              
+              this.newPersona = new Persona();
+              this.newInscripcion = new Inscripcion();
+              this.modalService.dismissAll();
+            });
+          });
+    
+          
+        }
+        
+      }else{
+        Swal.fire({
+          title: '¡Error!',
+          text: 'Esta persona no está inscrita en este taller.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        })
+      }
+    });
+    
+  }
+
   validarCampos2(): boolean{
     var check = false;
     if(this.newInscripcion.persona.id == 0 || this.newInscripcion.persona.id == null){
