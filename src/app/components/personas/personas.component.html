@@ -1,142 +1,144 @@
-<ng-template #formPersona let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">{{lblPersona}}</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');clear()"></button>
+<div class="container mt-3">
+    <ng-template #formPersona let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">{{lblPersona}}</h4>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click');clear()"></button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="mb-3">
+                    <label class="form-label">Nombres</label>
+                    <input [(ngModel)]="newPersona.nombres" name="nombres" type="text" class="form-control"
+                        placeholder="Ingrese los nombres de la persona...">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Apellido paterno</label>
+                    <input [(ngModel)]="newPersona.paterno" name="paterno" type="text" class="form-control"
+                        placeholder="Ingrese el ap. paterno de la persona...">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Apellido materno</label>
+                    <input [(ngModel)]="newPersona.materno" name="materno" type="text" class="form-control"
+                        placeholder="Ingrese el ap. materno de la persona...">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">DNI</label>
+                    <input [(ngModel)]="newPersona.dni" name="dni" type="text" class="form-control"
+                        placeholder="Ingrese el DNI de la persona...">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Teléfono</label>
+                    <input [(ngModel)]="newPersona.telefono" name="telefono" type="text" class="form-control"
+                        placeholder="Ingrese el teléfono de la persona...">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Correo</label>
+                    <input [(ngModel)]="newPersona.correo" name="correo" type="email" class="form-control"
+                        placeholder="Ingrese el correo de la persona...">
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-dark" (click)="save()">{{lblButtonPersona}}</button>
+        </div>
+    </ng-template>
+    
+    <ng-template #formInscripcion let-modalInscripcion>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Nueva Inscripción</h4>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modalInscripcion.dismiss('Cross click');clear()"></button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="mb-3">
+                    <label class="form-label">Persona</label>
+                    <select [(ngModel)]="newInscripcion.persona.id" name="persona" class="form-select" aria-label="Default select example">
+                        <option selected [value]="0">--Seleccione persona--</option>
+                        <option *ngFor="let persona of lstPersonas" [ngValue]="persona.id">{{persona.nombres}} {{persona.paterno}} {{persona.materno}}</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Taller</label>
+                    <select [(ngModel)]="newInscripcion.taller.id" name="taller" class="form-select" aria-label="Default select example">
+                        <option selected [value]="0">--Seleccione taller--</option>
+                        <option *ngFor="let taller of lstTalleres" [ngValue]="taller.id">{{taller.tema}}</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-dark" (click)="saveInscripcion()">Inscribir</button>
+        </div>
+    </ng-template>
+    
+    <ng-template #formInscripcionDelete let-modalInscripcionDelete>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Borrar Inscripción</h4>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modalInscripcionDelete.dismiss('Cross click');clear()"></button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="mb-3">
+                    <label class="form-label">Persona</label>
+                    <select [(ngModel)]="newInscripcion.persona.id" name="persona" class="form-select" aria-label="Default select example">
+                        <option selected [value]="0">--Seleccione persona--</option>
+                        <option *ngFor="let persona of lstPersonas" [ngValue]="persona.id">{{persona.nombres}} {{persona.paterno}} {{persona.materno}}</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Taller</label>
+                    <select [(ngModel)]="newInscripcion.taller.id" name="taller" class="form-select" aria-label="Default select example">
+                        <option selected [value]="0">--Seleccione taller--</option>
+                        <option *ngFor="let taller of lstTalleres" [ngValue]="taller.id">{{taller.tema}}</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-dark" (click)="deleteInscripcion()">Borrar Inscripción</button>
+        </div>
+    </ng-template>
+    
+    <div class="row">
+        <div class="col-6">
+            <h4>Personas</h4>
+        </div>
+        <div class="col-6">
+            <button class="btn btn-primary float-end" (click)="open(formPersona,'new')">Nuevo</button>
+        </div>
     </div>
-    <div class="modal-body">
-        <form>
-            <div class="mb-3">
-                <label class="form-label">Nombres</label>
-                <input [(ngModel)]="newPersona.nombres" name="nombres" type="text" class="form-control"
-                    placeholder="Ingrese los nombres de la persona...">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Apellido paterno</label>
-                <input [(ngModel)]="newPersona.paterno" name="paterno" type="text" class="form-control"
-                    placeholder="Ingrese el ap. paterno de la persona...">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Apellido materno</label>
-                <input [(ngModel)]="newPersona.materno" name="materno" type="text" class="form-control"
-                    placeholder="Ingrese el ap. materno de la persona...">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">DNI</label>
-                <input [(ngModel)]="newPersona.dni" name="dni" type="text" class="form-control"
-                    placeholder="Ingrese el DNI de la persona...">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Teléfono</label>
-                <input [(ngModel)]="newPersona.telefono" name="telefono" type="text" class="form-control"
-                    placeholder="Ingrese el teléfono de la persona...">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Correo</label>
-                <input [(ngModel)]="newPersona.correo" name="correo" type="email" class="form-control"
-                    placeholder="Ingrese el correo de la persona...">
-            </div>
-        </form>
+    <hr>
+    <div class="table-responsive">
+        <table class="table table-primary table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombres</th>
+                    <th scope="col">Paterno</th>
+                    <th scope="col">Materno</th>
+                    <th scope="col">DNI</th>
+                    <th scope="col">Teléfono</th>
+                    <th scope="col">Acción</th>
+                    <th scope="col">Editar</th>
+                    <th scope="col">Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let persona of lstPersonas">
+                    <th scope="row">{{persona.id}}</th>
+                    <td>{{persona.nombres}}</td>
+                    <td>{{persona.paterno}}</td>
+                    <td>{{persona.materno}}</td>
+                    <td>{{persona.dni}}</td>
+                    <td>{{persona.telefono}}</td>
+                    <td>
+                        <button class="btn btn-primary" (click)="open(formInscripcion);inscripcion(persona.id)">Inscripción <i class="bi bi-person-fill-add"></i></button>&nbsp;&nbsp;
+                        <button class="btn btn-danger" (click)="open(formInscripcionDelete);inscripcion(persona.id)">Borrar Inscripción <i class="bi bi-person-fill-add"></i></button>
+                    </td>
+                    <td><button class="btn btn-success" (click)="open(formPersona, 'edit');editar(persona.id)"><i class="bi bi-pencil-square"></i></button></td>
+                    <td><button class="btn btn-danger" (click)="eliminar(persona.id)"><i class="bi bi-trash"></i></button></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="save()">{{lblButtonPersona}}</button>
-    </div>
-</ng-template>
-
-<ng-template #formInscripcion let-modalInscripcion>
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Nueva Inscripción</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modalInscripcion.dismiss('Cross click');clear()"></button>
-    </div>
-    <div class="modal-body">
-        <form>
-            <div class="mb-3">
-                <label class="form-label">Persona</label>
-                <select [(ngModel)]="newInscripcion.persona.id" name="persona" class="form-select" aria-label="Default select example">
-                    <option selected [value]="0">--Seleccione persona--</option>
-                    <option *ngFor="let persona of lstPersonas" [ngValue]="persona.id">{{persona.nombres}} {{persona.paterno}} {{persona.materno}}</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Taller</label>
-                <select [(ngModel)]="newInscripcion.taller.id" name="taller" class="form-select" aria-label="Default select example">
-                    <option selected [value]="0">--Seleccione taller--</option>
-                    <option *ngFor="let taller of lstTalleres" [ngValue]="taller.id">{{taller.tema}}</option>
-                </select>
-            </div>
-        </form>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="saveInscripcion()">Inscribir</button>
-    </div>
-</ng-template>
-
-<ng-template #formInscripcionDelete let-modalInscripcionDelete>
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Borrar Inscripción</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modalInscripcionDelete.dismiss('Cross click');clear()"></button>
-    </div>
-    <div class="modal-body">
-        <form>
-            <div class="mb-3">
-                <label class="form-label">Persona</label>
-                <select [(ngModel)]="newInscripcion.persona.id" name="persona" class="form-select" aria-label="Default select example">
-                    <option selected [value]="0">--Seleccione persona--</option>
-                    <option *ngFor="let persona of lstPersonas" [ngValue]="persona.id">{{persona.nombres}} {{persona.paterno}} {{persona.materno}}</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Taller</label>
-                <select [(ngModel)]="newInscripcion.taller.id" name="taller" class="form-select" aria-label="Default select example">
-                    <option selected [value]="0">--Seleccione taller--</option>
-                    <option *ngFor="let taller of lstTalleres" [ngValue]="taller.id">{{taller.tema}}</option>
-                </select>
-            </div>
-        </form>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="deleteInscripcion()">Borrar Inscripción</button>
-    </div>
-</ng-template>
-
-<div class="row">
-    <div class="col-6">
-        <h4>Personas</h4>
-    </div>
-    <div class="col-6">
-        <button class="btn btn-primary float-end" (click)="open(formPersona,'new')">Nuevo</button>
-    </div>
-</div>
-<hr>
-<div class="table-responsive">
-    <table class="table table-primary table-hover">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Nombres</th>
-                <th scope="col">Paterno</th>
-                <th scope="col">Materno</th>
-                <th scope="col">DNI</th>
-                <th scope="col">Teléfono</th>
-                <th scope="col">Acción</th>
-                <th scope="col">Editar</th>
-                <th scope="col">Eliminar</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let persona of lstPersonas">
-                <th scope="row">{{persona.id}}</th>
-                <td>{{persona.nombres}}</td>
-                <td>{{persona.paterno}}</td>
-                <td>{{persona.materno}}</td>
-                <td>{{persona.dni}}</td>
-                <td>{{persona.telefono}}</td>
-                <td>
-                    <button class="btn btn-primary" (click)="open(formInscripcion);inscripcion(persona.id)">Inscripción <i class="bi bi-person-fill-add"></i></button>&nbsp;&nbsp;
-                    <button class="btn btn-danger" (click)="open(formInscripcionDelete);inscripcion(persona.id)">Borrar Inscripción <i class="bi bi-person-fill-add"></i></button>
-                </td>
-                <td><button class="btn btn-success" (click)="open(formPersona, 'edit');editar(persona.id)"><i class="bi bi-pencil-square"></i></button></td>
-                <td><button class="btn btn-danger" (click)="eliminar(persona.id)"><i class="bi bi-trash"></i></button></td>
-            </tr>
-        </tbody>
-    </table>
 </div>

@@ -1,74 +1,57 @@
-<h5>Dashboard</h5>
-<div class="container">
-    <div class="row">
-        <div class="col-6">
-            <div class="card">
-                <div class="card-header">
-                    Porcentaje de inscritos
+<div class="container mt-3">
+    <h5>Dashboard</h5>
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        Porcentaje de inscritos
+                    </div>
+                    <div class="card-body">
+                        <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart"
+                            [labels]="chartOptions.labels" [responsive]="chartOptions.responsive"></apx-chart>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart"
-                        [labels]="chartOptions.labels" [responsive]="chartOptions.responsive"></apx-chart>
+            </div>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        Cantidad de Inscritos por Taller
+                    </div>
+                    <div class="card-body">
+                        <apx-chart [series]="chartOptions2.series" [chart]="chartOptions2.chart"
+                            [dataLabels]="chartOptions2.dataLabels" [plotOptions]="chartOptions2.plotOptions"
+                            [yaxis]="chartOptions2.yaxis" [xaxis]="chartOptions2.xaxis" [legend]="chartOptions2.legend"
+                            [colors]="chartOptions2.colors" [grid]="chartOptions2.grid"></apx-chart>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-6">
-            <div class="card">
-                <div class="card-header">
-                    Cantidad de Inscritos por Taller
-                </div>
-                <div class="card-body">
-                    <apx-chart
-                        [series]="chartOptions2.series"
-                        [chart]="chartOptions2.chart"
-                        [dataLabels]="chartOptions2.dataLabels"
-                        [plotOptions]="chartOptions2.plotOptions"
-                        [yaxis]="chartOptions2.yaxis"
-                        [xaxis]="chartOptions2.xaxis"
-                        [legend]="chartOptions2.legend"
-                        [colors]="chartOptions2.colors"
-                        [grid]="chartOptions2.grid"
-                    ></apx-chart>
+        <div class="row mt-3 my-3">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        Estado de Asistencias por Talleres
+                    </div>
+                    <div class="card-body">
+                        <apx-chart [series]="chartOptions3.series" [chart]="chartOptions3.chart"
+                            [dataLabels]="chartOptions3.dataLabels" [plotOptions]="chartOptions3.plotOptions"
+                            [yaxis]="chartOptions3.yaxis" [legend]="chartOptions3.legend" [fill]="chartOptions3.fill"
+                            [stroke]="chartOptions3.stroke" [tooltip]="chartOptions3.tooltip"
+                            [xaxis]="chartOptions3.xaxis"></apx-chart>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row mt-3 my-3">
-        <div class="col-6">
-            <div class="card">
-                <div class="card-header">
-                    Estado de Asistencias por Talleres
-                </div>
-                <div class="card-body">
-                    <apx-chart
-                        [series]="chartOptions3.series"
-                        [chart]="chartOptions3.chart"
-                        [dataLabels]="chartOptions3.dataLabels"
-                        [plotOptions]="chartOptions3.plotOptions"
-                        [yaxis]="chartOptions3.yaxis"
-                        [legend]="chartOptions3.legend"
-                        [fill]="chartOptions3.fill"
-                        [stroke]="chartOptions3.stroke"
-                        [tooltip]="chartOptions3.tooltip"
-                        [xaxis]="chartOptions3.xaxis"
-                    ></apx-chart>
-                </div>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="card">
-                <div class="card-header">
-                    Cantidad de Inscritos por Taller
-                </div>
-                <div class="card-body">
-                    <apx-chart
-                        [series]="chartOptions4.series"
-                        [chart]="chartOptions4.chart"
-                        [dataLabels]="chartOptions4.dataLabels"
-                        [plotOptions]="chartOptions4.plotOptions"
-                        [title]="chartOptions4.title"
-                        [legend]="chartOptions4.legend"
-                    ></apx-chart>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        Cantidad de Inscritos por Taller
+                    </div>
+                    <div class="card-body">
+                        <apx-chart [series]="chartOptions4.series" [chart]="chartOptions4.chart"
+                            [dataLabels]="chartOptions4.dataLabels" [plotOptions]="chartOptions4.plotOptions"
+                            [title]="chartOptions4.title" [legend]="chartOptions4.legend"></apx-chart>
+                    </div>
                 </div>
             </div>
         </div>
