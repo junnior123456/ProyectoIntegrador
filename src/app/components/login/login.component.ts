@@ -1,3 +1,4 @@
+import { AuthService } from './../../services/auth.service';
 import { isLogged } from './../globals';
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit {
   password = "";
   isLogged = false;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.isLogged = isLogged;
@@ -37,7 +38,8 @@ export class LoginComponent implements OnInit {
           icon: 'success',
           confirmButtonText: 'Aceptar'
         })
-        this.router.navigate(['/home']);
+        this.authService.changeAuthenticated(true);
+        this.router.navigate(['/dashboard']);
       }else{
         this.isLogged = false;
         Swal.fire({

@@ -11,6 +11,8 @@ import { PersonasComponent } from './components/personas/personas.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
+import { AuthGuard } from './auth/auth.guard';
+import { AuthService } from './services/auth.service';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,7 @@ import { LoginComponent } from './components/login/login.component';
     HttpClientModule,
     NgbModule
   ],
-  providers: [],
+  providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
